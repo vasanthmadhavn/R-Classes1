@@ -1,0 +1,590 @@
+getwd () - to find the working directory. Gives us the path to working directory.
+dir () - gets the list of all files in the working directory
+
+-------------------------------------------
+Function to simulate the mean of random 100 variables:
+myfunction <- function() {
+	x <- rnorm(100)
+	mean(x)
+}
+
+------------------------------------------
+ls() - to call the functions loaded into R
+------------------------------------------
+source("filename.R") - to load the R file "filename.R" from Working directory into R.
+----------------------------------------------
+
+New function to add noise to a function similar to above
+
+second <- function(z) {
+	z + rnorm(length(z))
+}
+-------------------------------------------
+Entering Inputs
+At R prompt (>) we type expressions. The symbol <- is the assignment operator.
+
+x <- 1 (assignment operator assigns a value '1' to the symbol/element 'x').
+print(x) (to print the value of 'x')
+[1] 1 ( the result of function 'print', we are seeing the numeric vector "1" for the element 'x')
+
+msg <- "hello" ## everything to the right of # is a comment. Here, we are printing a character vector.
+
+> x <- 1:20 ## the operator ':' is used to create integer sequence
+
+---------------------------------------------------------------------------------------
+Data types in R
+
+Objects
+R has 5 basic types or "Atomic" classes of objects:
+-Character
+-Numeric (real numbers)
+-Integers
+-Complex
+-Logical
+
+The most basic object is a 'vector'
+-A vector contains objects of the same class.
+-One exception is a list, which is represented as a vector but can contain objects of different classes.
+
+Numeric or Numbers
+- entering 1 in R, gives a numeric objects
+- entering 1L gives an integer
+- Inf is a special number
+- NaN represents a missing or an undefined value
+
+Object can have 'Attributes' e.g.
+Names, dimname
+dimensions
+class
+length
+
+Attributes of an object can be accessed using the attributes() function.
+-------------------------------------------------------------------------------------------
+
+Data types in R - Vectors and Lists
+
+Creating Vectors classes
+The c() function can be used to create vectors of objects. "c" can be read as concatenate.
+E.g.
+> x <- c(0.5,0.6)  ##numeric (class)
+> x <- c(TRUE, FALSE) ##logical (class)
+> x <- c(T, F)  ##Logical
+> x <- c("a", "b", "c") ##character
+> x <- 9:29 ## Integers
+> x <- c(1+0i, 2+4i) ## complex
+
+Using the vector() function
+
+> x <- vector("numeric", length = 10)
+> x
+[1] 0 0 0 0 0 0 0 0 0 0 (result) numeric gets a default '0' value
+
+Mixing ojects - What about the following?
+
+> y <- c(1.7, "a") ## character - y is an object with a vector 1.7 and a.
+> y <- c(TRUE, 2)  ## numeric
+> y <- c("a", TRUE) ## character
+
+R will force the vector to take the Least Common denominator. Implicit Coercion occurs so that every element in the vector is the same class.
+character<numeric<logical
+
+Explicit coercion: Objects can be explicitly coerced from one class to another using the as.* functions.
+
+> x <- 0:6
+> class(x)
+[1] "integer"
+
+> as.numeric(x)
+[1] 0 1 2 3 4 5 6
+
+> as.logical(x)
+[1] FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+
+> as.character(x)
+[1] "0" "1" "2" "3" "4" "5" "6"
+
+> as.integer(x)
+[1] 0 1 2 3 4 5 6
+> 
+
+Nonsensical coercion result in NAs, along with a warning
+E.g.
+> x <- c("a", "b", "c")
+> class(x)
+[1] "character"
+> as.numeric(x)
+[1] NA NA NA
+Warning message:
+NAs introduced by coercion 
+
+> as.logical(x)
+Error in as.logica(x) : could not find function "as.logica"
+> as.logical(x)
+[1] NA NA NA
+
+> as.complex(x)
+[1] NA NA NA
+Warning message:
+NAs introduced by coercion 
+-----------------------------------------------------------
+List: are special type of vectors that can contain elements of different classes.
+
+> x <- list(1,"a",TRUE,1+4i)
+> x
+[[1]] List have double brackets, other have single brackets.
+[1] 1
+
+[[2]]
+[1] "a"
+
+[[3]]
+[1] TRUE
+
+[[4]]
+[1] 1+4i
+---------------------------------------------------------------
+Matrices: are vectors with a dimension attribute. A dimension attribute is itself an integer vector of length 2 (nrow, ncol)
+
+> m <- matrix(nrow = 2, ncol = 3)
+> m
+     [,1] [,2] [,3]
+[1,]   NA   NA   NA
+[2,]   NA   NA   NA
+> dim(m)
+[1] 2 3        ## result is 2 rows, and 3 columns
+> attributes(m)
+$dim
+[1] 2 3  		## result is a list with 1st element is the 'dim' element and then the vectors 2 and 3.
+
+Ways to Construct Matrices
+
+1. Matrices are constructed columnwise using matrix () function
+e.g.
+> m <- matrix(1:6, nrow = 2, ncol = 3)
+> m
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+
+2. Matrices can also be created directly from vectors by adding a dimension attribute.
+e.g.
+> m <- 1:10
+> m
+ [1]  1  2  3  4  5  6  7  8  9 10
+> dim(m) <- c(2,5)
+> m
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    3    5    7    9
+[2,]    2    4    6    8   10
+
+3. cbind-ing and rbind-ing
+Matrices can also be created by column-binding and row-binding with cbind() and rbind()
+
+> x <- 1:3
+> y <- 10:12
+> cbind(x,y)
+     x  y
+[1,] 1 10
+[2,] 2 11
+[3,] 3 12
+> rbind(x,y)
+  [,1] [,2] [,3]
+x    1    2    3
+y   10   11   12
+----------------------------------------------------------------------------------------
+
+Factors
+
+Factors are used to represent categorical data. A factor as an integer vector where each integer has a label
+-Factors are treated specially by modelling functions like lm() and glm()
+-Using factors with labels is better than using integers because factors are self-describing;
+e.g. having a varibale that has values "Male" and "Female" is better than a variable that has 1 and 2.
+
+> x <- factor(c("yes", "yes", "no", "yes"))
+> x
+[1] yes yes no yes   ## the result is a little different from characters.
+Levels: no yes			## the result also shows additonal attribute 'level'
+
+> table(x) ## to get a frequency count of the factors
+x
+ no yes 
+  1   3 
+  
+  
+> unclass(x)		## to bring down the integer vector, to see how factors are represented in R
+[1] 2 2 1 2
+attr(,"levels")
+[1] "no"  "yes"
+> 
+
+Order in Factors - Order of levels can be set using the 'levels' argument to factor(). This is important
+in linear modelling because the first level is used as baseline.
+
+> x <- factor(c("yes", "yes", "no", "yes", "no"),
++ levels = c("yes", "no"))  ## stating explicitly the levels, otherwise R will use alphabetical order with no as baseline.
+> x
+[1] yes yes no  yes no 
+Levels: yes no		## notice how this is different from the previous example on row 206
+
+-----------------------------------------------------------------------------------------------------------
+Missing Values are denoted by NA. NaN for undefined math operations
+- is.na() is used to test objects if they are NA
+- is.nan() is used to test for NaN
+- NA values also have a class, so there are integer NA, Character NA etc
+- A NaN value is also NA but converse is not true.
+
+> x <- c(1, 2, NA, 10, 3)
+> is.na(x)
+[1] FALSE FALSE  TRUE FALSE FALSE
+> is.nan(x)
+[1] FALSE FALSE FALSE FALSE FALSE
+ 
+> x <- c(1, 2, NaN, NA, 4)
+> is.na(x)
+[1] FALSE FALSE  TRUE  TRUE FALSE  ### Na is returning true for both NA and NaN values
+> is.nan(x)
+[1] FALSE FALSE  TRUE FALSE FALSE
+
+-------------------------------------------------------------------------------------------------------
+Data Frames - are used to store tabular data
+
+- they are special type of list where every element of the list has to have the same length
+- Each element of the list can be thought of as a column and the length of each element is the number of rows
+- Unlike matrices, data frames can store different classes of objects in each column (just like lists);
+matrices must have every element be the same class.
+- Data frames also have special attribute called row.names
+- Data frames are usually created by calling read.table() or read.csv()
+- Can be converted to a matrix by calling data.matrix()
+
+> x <- data.frame(foo = 1:4, bar = c(T, T, F, F))
+> x
+  foo   bar
+1   1  TRUE
+2   2  TRUE
+3   3 FALSE
+4   4 FALSE
+> nrow(x)  ### row.names is defaulted to 1,2,3 and 4
+[1] 4
+> ncol(x)
+[1] 2
+
+----------------------------------------------------------------------------------------------------------------
+Names - R objects can also be given names with names() function
+
+> x <- 1:3
+> names(x)
+NULL
+> 
+> x <- 1:3
+> names(x) <- c("foo", "bar", "norf")
+> x
+ foo  bar norf 
+   1    2    3 
+
+   
+ Lists can also have names, similarly matrices can also have names with dimnames() function
+-----------------------------------------------------------------------------------------------------------------
+ 
+ Reading Data
+ 
+ -read.table, read.csv for reading tabular data
+ -readLines, for reading lines if a text file
+ -source, for reading in R code files (inverse of dump)
+ -dget, for reading in R code files (inverse of dput)
+ -load, for reading in saved  workspaces
+ -unserialize, for reading single R objects in binary form
+ 
+Writing Data
+-write.table
+-writeLines
+dump
+dputsave
+serialize
+
+
+Reading data files with read.table
+The read.table function is one of the most commonly used functions for reading data. A few imp arguments to keep in mind
+-file ## name of a file, or a connection
+-header ## logical flag indicating if the file has a header
+-sep ## a sting indicating how the columns are seperated
+-colClasses ## a character vector indicating the class of each column in the dataset
+-nrows ## the number of rows in dataset
+-comment.char ## a character string indicating the comment character
+-skip ## the number of lines to skip from the beginning
+-stringsAsFactors ## 
+
+-------------------------------------------------------------------------------
+Reading larger dataset
+-Read the help page for read.table, which contains many hints
+-Make a rough calculation of the memory required to store your dataset. If the dataset is larger than RAM on your computer, then stop
+-Set comment.char = "" if there are no commented lines in your file
+-use the colClasses argument to specify the class of each column, it saves time for R
+
+A quick way to figure out the classes of each column is:
+
+intial <- read.table("datatable.txt", nrows = 100)
+classes <- sapply(initial, class)
+tabAll <- read.table("datatable.txt",
+			colClasses = classes)
+
+dput-ting R objects
+
+Another way to pass data around is by deparsing the R object with dput and reading it back in with dget.
+
+e.g.
+> y <- data.frame(a = 1, b = "a")
+> dput(y)
+structure(list(a = 1, 
+				b = structure(1L, .Label = "a", 
+					class = "factor")),
+				 .Names = c("a", "b"), row.names = c(NA, -1L), 
+				 class = "data.frame")
+				 
+> dput(y, file = "y.R")
+> new.y <- dget("y.R")
+> new.y
+  a b
+1 1 a
+
+
+-------------------------------------------------------------------------------
+Reading  Tabular and Large Tables
+
+------------------------------------------------------------------------------
+Connections: Interface to the outside world 
+In general, connections are powerfil tools that let you navigate files or other external objects.
+
+data <- read.csv("foo.txt")  ## this reads the entire file "foo.txt"
+
+Sometimes we don't need to read entire file.In that case
+
+con <- gzfile("Words.gz"
+x <- readLines (con, 10)
+x
+
+
+-------------------------------------------------------------------------------
+Subsetting - Basics
+Operators used to extract subsets of R objects
+
+- [ always returns an object of the same class as the original. So, subset a vector, we get back a vector.
+if you subset a list, you get back a list.
+- [[ is used to extract an object from a list. Remember, lists have multiple classes, hence a [[ is used to extract 
+elements of a list or a data frame. the class of the returned object may not be a list or a data frame
+- $ is used to extract elements in data frame by 'Names'. Similar to [[
+
+> x <- c("a", "b", "c", "c", "d", "a")
+> x[1]  ## we subsetted x with numeric index
+[1] "a" ## the result is the same class of object.
+> x[2]
+[1] "b"
+> x[1:4]
+[1] "a" "b" "c" "c"
+> x[x> "a"] ## we are subsetting x with a logical index
+[1] "b" "c" "c" "d"
+> u <- x> "a"  ## a logical vector
+> u
+[1] FALSE  TRUE  TRUE  TRUE  TRUE FALSE
+> x[u] ## we are subsetting x with a logical vector.
+[1] "b" "c" "c" "d"
+> 
+-----------------------------------------------------------------------------
+Subsetting Lists
+
+> x <- list(foo = 1:4, bar = 0.6)  ## list of 2 elements
+> x
+$foo
+[1] 1 2 3 4
+
+$bar
+[1] 0.6
+
+> x[1]    ## single [ will give us the list and the values
+$foo
+[1] 1 2 3 4
+
+> x[2]
+$bar
+[1] 0.6
+
+> x[[1]]
+[1] 1 2 3 4
+> x$foo   ## $ is literally looking for "foo" in the object
+[1] 1 2 3 4
+> x[[2]]
+[1] 0.6
+> x[["bar"]]
+[1] 0.6
+> x["bar"]
+$bar
+[1] 0.6
+
+
+To subset multiple vectors in an object
+> x <- list(foo = 1:4, bar = 0.6, baz = "hello")
+> x[c(1,3)]  ## subsetting 1 and 3 values
+$foo
+[1] 1 2 3 4
+
+$baz
+[1] "hello"
+
+We can also assign proxy names to subset vectors (with limitations) e.g
+
+> x <- list(foo = 1:4, bar = 0.6, baz = "hello")
+> name <- "foo" ## we assigned "name" to "foo"
+> x[name] ## we index the function "name"
+$foo
+[1] 1 2 3 4
+
+> x[[name]] ## indexing with [[ results in the values directly. [[ IS COMPUTING THE VALUE OF 'NAME'
+[1] 1 2 3 4
+> x$name  ## indexing with $ will results NULL, this is the limitation. BECAUSE $ IS LITERALLY LOOKING FOR 'NAME' IN THE OBJECT.
+NULL
+> x$foo
+[1] 1 2 3 4
+> 
+
+- [[ can also subset a sequence from an object.
+> x <- list(a = list(10,12,14), b = c(3.14,2.18))
+> x[[c(1,3)]] ## subset 3rd element from 1st object.
+[1] 14
+> x[[1]][[3]] ## the above can also be subsetted by [[ 1st and 3rd element
+[1] 14
+> 
+> x[[c(2,1)]]
+[1] 3.14
+--------------------------------------------------------------------------------------
+Subsetting Matrices
+
+> x <- matrix(1:6, 2, 3)
+> x
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+> x[1,2]  ## retrieve 1st row 2nd column
+[1] 3  ## remember, the subset of a matrix should be a matrix, but here is an exception. We are seeing a number not a 1x1 matrix.
+> x[2,1]
+[1] 2
+> 
+
+Indices with missing values
+> x [1, ] ## retrieve 1st row
+[1] 1 3 5   ### we are seeing vector with the elements 1, 3, 5.
+> x[ ,2]  ## retrieve 2nd column
+[1] 3 4
+> 
+
+The issue in line 456 - when a single element of a matrix is retrieved, it is returned as a vector with length 1 rather than
+a matrix 1x1. This behavior can be turned off by setting drop = FALSE
+> x <- matrix(1:6, 2, 3)
+> x[1,2]
+[1] 3
+> x[1,2, drop = FALSE]  ## to preserve the 1X1 matrix
+     [,1]
+[1,]    3   ## here is a the 1x1 matrix> 
+
+In case of missing index value too, the result is a vector (line 463). We can add drop function here too
+> x <- matrix(1:6, 2, 3)
+> x
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+> x[1,]
+[1] 1 3 5   ### ### we are seeing vector with the elements 1, 3, 5
+> x[1, ,drop = FALSE]
+     [,1] [,2] [,3]
+[1,]    1    3    5
+> 
+-----------------------------------------------------------------------------------------------------
+
+Partial Matching
+Partial matching of names is allowed with [[ and $
+> x <- list(aardasfr = 1:5)
+> x$a
+[1] 1 2 3 4 5
+> x[["a"]]  ## looking for exact "a" in the elements
+NULL
+> x[["a", exact=FALSE]]
+[1] 1 2 3 4 5
+> 
+---------------------------------------------------------------------------
+
+Removing NA values - Removing missing values (NAs)
+
+> x <- c(1,2,NA,3,4,NA,5)
+> bad <- is.na(x)
+> x[!bad]   ## Not bad = good
+[1] 1 2 3 4 5
+
+What if there are multiple things and you want to take the subset with no missing values
+
+> x <- c(1,2,NA,4,NA,5)
+> y<- c("a","b",NA,"d",NA,"f")
+> good <- complete.cases(x,y)
+> good
+[1]  TRUE  TRUE FALSE  TRUE FALSE  TRUE
+> x[good]
+[1] 1 2 4 5
+> y[good]
+[1] "a" "b" "d" "f"
+
+
+-----------------------------------------------------------------------------
+Vectorized operations
+Many operations in R are vectorized making code more efficient, conscise and easier to read
+
+> x <- 1:4; y <- 6:9
+> x+y
+[1]  7  9 11 13
+> x>2
+[1] FALSE FALSE  TRUE  TRUE
+> y == 8
+[1] FALSE FALSE  TRUE FALSE
+> x * y
+[1]  6 14 24 36
+> x / y
+[1] 0.1666667 0.2857143 0.3750000 0.4444444
+
+Vectorized matrix operations
+
+> m <-matrix(1:4, 2, 2); y <- matrix(rep(10,4), 2 ,2) ## repeates value 10 4 times
+> m+y ## element-wise addition
+     [,1] [,2]
+[1,]   11   13
+[2,]   12   14
+> m*y ## element-wise multiple
+     [,1] [,2]
+[1,]   10   30
+[2,]   20   40
+> m/y
+     [,1] [,2]
+[1,]  0.1  0.3
+[2,]  0.2  0.4
+> m%*%y  ## true matrix multiplication
+     [,1] [,2]
+[1,]   40   40
+[2,]   60   60
+
+---------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
